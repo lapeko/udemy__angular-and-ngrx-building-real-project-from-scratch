@@ -1,6 +1,9 @@
 import {Component, inject} from '@angular/core'
 import {RouterLink} from '@angular/router'
+import {Store} from '@ngrx/store'
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms'
+
+import {register} from '../../store/auth.actions'
 
 @Component({
   selector: 'mc-register',
@@ -12,17 +15,17 @@ import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms'
   standalone: true
 })
 export class RegisterComponent {
-  private fb = inject(FormBuilder);
+  private fb = inject(FormBuilder)
+  private store: Store = inject(Store)
 
   form = this.fb.nonNullable.group({
-    userName: ['', Validators.required],
+    username: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', Validators.required],
-  });
+    password: ['', Validators.required]
+  })
 
   onSubmit(): void {
-    console.log('submit');
-    console.log(this.form.value);
-    console.log(this.form.getRawValue());
+    const request = {user: this.form.getRawValue()}
+    this.store.dispatch(register({request}))
   }
 }
